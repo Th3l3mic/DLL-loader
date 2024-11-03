@@ -1,0 +1,17 @@
+#include <windows.h>
+#pragma comment(lib, "user32.lib")
+
+BOOL WINAPI DllMain(HINSTANCE hInstDLL, DWORD fdwReason, LPVOID lpvReserved)
+{
+    switch (fdwReason) {
+    case DLL_PROCESS_ATTACH:
+        MessageBoxW(NULL, L"You've been Hacked!", L"HAKCED!", MB_ICONEXCLAMATION | MB_OK); //Okno z Twoim komunikatem jako PoC
+        break;
+        
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+        // Możesz wykonać dodatkowe operacje, jeśli zajdzie taka potrzeba
+        break;
+    }
+    return TRUE;
